@@ -187,112 +187,152 @@ body::before {
 @media (max-width: 896px) and (orientation: landscape) {
     .menu-container, .select-container, .custom-container, .result-container,
     .missions-container, .powers-container, .reward-container {
-        padding: 15px 30px;
-        width: 95%;
-        max-height: 85vh;
+        padding: 10px 20px;
+        width: 98%;
+        max-height: 88vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
     .neon-title {
-        font-size: 36px;
-        margin-bottom: 15px;
+        font-size: 28px;
+        margin-bottom: 10px;
     }
     
     .subtitle {
-        font-size: 14px;
-        margin-bottom: 15px;
+        font-size: 12px;
+        margin-bottom: 10px;
     }
     
     .developer-credit {
-        font-size: 11px;
-        margin-top: 15px;
+        font-size: 10px;
+        margin-top: 10px;
     }
     
     .btn-primary, .btn-secondary, .btn-back, .btn-pause {
-        padding: 8px 20px;
-        font-size: 14px;
-        margin: 5px;
+        padding: 6px 16px;
+        font-size: 12px;
+        margin: 4px;
     }
     
     .character-grid {
         grid-template-columns: repeat(5, 1fr);
-        gap: 10px;
+        gap: 8px;
+        max-height: 65vh;
+        overflow-y: auto;
     }
     
     .character-card {
-        padding: 12px;
+        padding: 8px;
     }
     
     .character-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 28px;
-        margin-bottom: 8px;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin-bottom: 5px;
     }
     
     .character-name {
-        font-size: 13px;
+        font-size: 11px;
+        margin-bottom: 3px;
     }
     
     .character-stats {
-        font-size: 9px;
+        font-size: 8px;
     }
     
     .level-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 10px;
+        gap: 8px;
+        max-height: 65vh;
+        overflow-y: auto;
     }
     
     .level-card {
-        padding: 12px;
+        padding: 10px;
     }
     
     .level-number {
-        font-size: 28px;
+        font-size: 24px;
     }
     
     .level-name {
-        font-size: 14px;
+        font-size: 13px;
     }
     
     .level-description {
-        font-size: 10px;
+        font-size: 9px;
+    }
+    
+    .customization {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    .custom-section {
+        margin-bottom: 15px;
+    }
+    
+    .custom-section h3 {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .color-options {
+        gap: 8px;
+    }
+    
+    .color-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .accent-options {
+        gap: 8px;
+    }
+    
+    .accent-btn {
+        padding: 6px 12px;
+        font-size: 11px;
     }
     
     #xp-display {
-        top: 10px;
-        left: 10px;
-        padding: 8px 12px;
-        font-size: 16px;
+        top: 8px;
+        left: 8px;
+        padding: 6px 10px;
+        font-size: 14px;
     }
     
     #xp-amount {
-        font-size: 18px;
+        font-size: 16px;
     }
     
     #game-ui {
-        top: 10px;
-        right: 10px;
+        top: 8px;
+        right: 8px;
     }
     
     #health-bar {
-        width: 150px;
-        height: 25px;
+        width: 140px;
+        height: 22px;
     }
     
     #health-text {
-        font-size: 12px;
+        font-size: 11px;
     }
     
     #score-display, #level-display {
-        font-size: 13px;
-        padding: 6px 12px;
+        font-size: 12px;
+        padding: 5px 10px;
     }
     
     .controls-info {
-        font-size: 9px;
-        padding: 6px 10px;
+        font-size: 8px;
+        padding: 5px 8px;
         bottom: 5px;
         left: 5px;
+        max-width: 200px;
     }
     
     .controls-info p {
@@ -300,20 +340,48 @@ body::before {
     }
     
     .missions-list, .powers-list {
-        gap: 8px;
-        max-height: 60vh;
+        gap: 6px;
+        max-height: 58vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
     
     .mission-card, .power-card {
-        padding: 12px;
+        padding: 10px;
     }
     
     .mission-title, .power-title {
-        font-size: 14px;
+        font-size: 13px;
+        margin-bottom: 5px;
     }
     
-    .mission-description, .power-description {
+    .mission-description, .power-description, .mission-reward, .power-cost {
+        font-size: 10px;
+        margin: 3px 0;
+    }
+    
+    .mission-progress {
+        height: 18px;
+        margin: 6px 0;
+    }
+    
+    .progress-text {
+        font-size: 10px;
+    }
+    
+    .btn-claim, .btn-buy {
+        padding: 5px 12px;
         font-size: 11px;
+        margin-top: 6px;
+    }
+    
+    .result-stats {
+        font-size: 13px;
+        margin: 8px 0;
+    }
+    
+    .result-stats p {
+        margin: 4px 0;
     }
 }
 
