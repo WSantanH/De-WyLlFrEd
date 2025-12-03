@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberBots RPG - Jogo Futurista</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HUD do Jogo -->
+    <div id="xp-display">XP: <span id="xp-amount">0</span></div>
+    
+    <!-- Tela de Menu Principal -->
+    <div id="main-menu" class="screen active">
+        <div class="menu-container">
+            <h1 class="neon-title">CyberBots RPG</h1>
+            <p class="subtitle">Batalha Futurista de Robôs Humanoides</p>
+            <button class="btn-primary" onclick="game.showCharacterSelect()">INICIAR JOGO</button>
+            <button class="btn-secondary" onclick="game.showMissions()">MISSÕES</button>
+            <button class="btn-secondary" onclick="game.showPowers()">PODERES</button>
+            <p class="developer-credit">Desenvolvido por Wyllfred Santana</p>
+        </div>
+    </div>
+
+    <!-- Tela de Seleção de Personagem -->
+    <div id="character-select" class="screen">
+        <div class="select-container">
+            <h2 class="neon-title">ESCOLHA SEU CYBERBOT</h2>
+            <div id="character-grid" class="character-grid"></div>
+            <button class="btn-back" onclick="game.showMainMenu()">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- Tela de Personalização -->
+    <div id="customization" class="screen">
+        <div class="custom-container">
+            <h2 class="neon-title">PERSONALIZE SEU CYBERBOT</h2>
+            <div class="custom-preview">
+                <div id="preview-bot" class="preview-bot"></div>
+            </div>
+            <div class="custom-controls">
+                <label>Cor Primária: <input type="color" id="color-primary" value="#00ffff"></label>
+                <label>Cor Secundária: <input type="color" id="color-secondary" value="#ff00ff"></label>
+                <label>Intensidade do Brilho: <input type="range" id="glow-intensity" min="0" max="100" value="70"></label>
+            </div>
+            <button class="btn-primary" onclick="game.showLevelSelect()">ESCOLHER NÍVEL</button>
+            <button class="btn-back" onclick="game.showCharacterSelect()">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- Tela de Seleção de Nível -->
+    <div id="level-select" class="screen">
+        <div class="select-container">
+            <h2 class="neon-title">ESCOLHA O NÍVEL</h2>
+            <div id="level-grid" class="level-grid"></div>
+            <button class="btn-primary" id="start-game-btn" onclick="game.startGame()" style="display: none;">INICIAR PARTIDA</button>
+            <button class="btn-back" onclick="game.showCustomization()">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- Tela do Jogo -->
+    <div id="game-screen" class="screen">
+        <canvas id="game-canvas"></canvas>
+        <div id="game-ui">
+            <div id="health-bar">
+                <div id="health-fill"></div>
+                <span id="health-text">HP: 100/100</span>
+            </div>
+            <div id="score-display">Pontuação: <span id="score">0</span></div>
+            <div id="level-display">Nível: <span id="current-level">1</span></div>
+            <div class="controls-info">
+                <p>🎮 CONTROLES:</p>
+                <p>A/D - Mover | ESPAÇO - Pular</p>
+                <p>SHIFT - Super Pulo | X - Atacar</p>
+                <p>C ou E - Poder Especial</p>
+            </div>
+            <button class="btn-pause" onclick="game.pauseGame()">PAUSAR</button>
+        </div>
+    </div>
+
+    <!-- Tela de Vitória -->
+    <div id="victory-screen" class="screen result-screen">
+        <div class="result-container">
+            <h1 class="neon-title victory">VITÓRIA!</h1>
+            <p class="result-message">Você derrotou todos os inimigos!</p>
+            <div class="result-stats">
+                <p>Pontuação: <span id="victory-score">0</span></p>
+                <p>XP Ganho: <span id="victory-xp">0</span></p>
+            </div>
+            <button class="btn-primary" onclick="game.showMainMenu()">MENU PRINCIPAL</button>
+            <button class="btn-secondary" onclick="game.restartGame()">JOGAR NOVAMENTE</button>
+        </div>
+    </div>
+
+    <!-- Tela de Derrota -->
+    <div id="defeat-screen" class="screen result-screen">
+        <div class="result-container">
+            <h1 class="neon-title defeat">DERROTA</h1>
+            <p class="result-message">Seu CyberBot foi destruído...</p>
+            <div class="result-stats">
+                <p>Pontuação: <span id="defeat-score">0</span></p>
+                <p>XP Ganho: <span id="defeat-xp">0</span></p>
+            </div>
+            <button class="btn-primary" onclick="game.showMainMenu()">MENU PRINCIPAL</button>
+            <button class="btn-secondary" onclick="game.restartGame()">TENTAR NOVAMENTE</button>
+        </div>
+    </div>
+
+    <!-- Tela de Missões -->
+    <div id="missions-screen" class="screen">
+        <div class="missions-container">
+            <h2 class="neon-title">MISSÕES DISPONÍVEIS</h2>
+            <div id="missions-list" class="missions-list"></div>
+            <button class="btn-back" onclick="game.showMainMenu()">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- Tela de Poderes -->
+    <div id="powers-screen" class="screen">
+        <div class="powers-container">
+            <h2 class="neon-title">DESBLOQUEAR PODERES</h2>
+            <p class="info-text">Seu XP: <span id="powers-xp">0</span></p>
+            <div id="powers-list" class="powers-list"></div>
+            <button class="btn-back" onclick="game.showMainMenu()">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- Tela de Recompensa -->
+    <div id="reward-screen" class="screen">
+        <div class="reward-container">
+            <h2 class="neon-title">RECOMPENSA RECEBIDA!</h2>
+            <div class="reward-content">
+                <p class="reward-text">+<span id="reward-xp">0</span> XP</p>
+                <p id="reward-message" class="reward-message"></p>
+            </div>
+            <button class="btn-primary" onclick="game.closeReward()">CONTINUAR</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
