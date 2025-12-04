@@ -156,33 +156,6 @@ body::before {
     }
 }
 
-/* Força orientação horizontal em dispositivos móveis */
-@media (max-width: 768px) and (orientation: portrait) {
-    body::before {
-        content: "⟲ Por favor, gire seu dispositivo para o modo horizontal";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #000;
-        color: #0ff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-size: 24px;
-        z-index: 99999;
-        padding: 20px;
-        font-family: 'Orbitron', sans-serif;
-        text-shadow: 0 0 10px #0ff;
-    }
-    
-    #app {
-        display: none;
-    }
-}
-
 /* Responsividade para smartphones em modo horizontal */
 @media (max-width: 896px) and (orientation: landscape) {
     .menu-container, .select-container, .custom-container, .result-container,
