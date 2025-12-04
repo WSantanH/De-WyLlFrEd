@@ -166,7 +166,101 @@ class GameManager {
         document.getElementById('current-level').textContent = levelName;
         
         gameEngine.start();
+        this.setupMobileControls();
     }
+
+    setupMobileControls() {
+        const mobileControls = document.getElementById('mobile-controls');
+        if (!mobileControls) return;
+
+        // Remove listeners antigos
+        const buttons = mobileControls.querySelectorAll('button');
+        buttons.forEach(btn => {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+        });
+
+        // D-Pad controls
+        const dpadBtns = document.querySelectorAll('.dpad-btn');
+        dpadBtns.forEach(btn => {
+            const action = btn.dataset.action;
+            
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (!gameEngine || !gameEngine.player) return;
+                
+                switch(action) {
+                    case 'left':
+                        gameEngine.keys.left = true;
+                        break;
+                    case 'right':
+                        gameEngine.keys.right = true;
+                        break;
+                }
+            });
+
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (!gameEngine || !gameEngine.player) return;
+                
+                switch(action) {
+                    case 'left':
+                        gameEngine.keys.left = false;
+                        break;
+                    case 'right':
+                        gameEngine.keys.right = false;
+                        break;
+                }
+            });
+        });
+
+        // Action buttons
+        const actionBtns = document.querySelectorAll('.action-btn');
+        actionBtns.forEach(btn => {
+            const action = btn.dataset.action;
+            
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (!gameEngine || !gameEngine.player) return;
+                
+                switch(action) {
+                    case 'jump':
+                        gameEngine.keys.jump = true;
+                        break;
+                    case 'superjump':
+                        gameEngine.keys.superJump = true;
+                        break;
+                    case 'attack':
+                        gameEngine.keys.attack = true;
+                        break;
+                    case 'power':
+                        gameEngine.keys.specialPower = true;
+                        break;
+                }
+            });
+
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                if (!gameEngine || !gameEngine.player) return;
+                
+                switch(action) {
+                    case 'jump':
+                        gameEngine.keys.jump = false;
+                        break;
+                    case 'superjump':
+                        gameEngine.keys.superJump = false;
+                        break;
+                    case 'attack':
+                        gameEngine.keys.attack = false;
+                        break;
+                    case 'power':
+                        gameEngine.keys.specialPower = false;
+                        break;
+                }
+            });
+        });
+    }
+
 
     getActivePowers() {
         const charData = this.getCharacter(this.selectedCharacter);
