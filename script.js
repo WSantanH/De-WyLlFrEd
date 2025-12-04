@@ -212,6 +212,20 @@ class GameManager {
                         break;
                 }
             });
+
+            btn.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                if (!gameEngine || !gameEngine.player) return;
+                
+                switch(action) {
+                    case 'left':
+                        gameEngine.keys.left = false;
+                        break;
+                    case 'right':
+                        gameEngine.keys.right = false;
+                        break;
+                }
+            });
         });
 
         // Action buttons
@@ -225,36 +239,16 @@ class GameManager {
                 
                 switch(action) {
                     case 'jump':
-                        gameEngine.keys.jump = true;
+                        gameEngine.player.jump();
                         break;
                     case 'superjump':
-                        gameEngine.keys.superJump = true;
+                        gameEngine.player.superJump();
                         break;
                     case 'attack':
-                        gameEngine.keys.attack = true;
+                        gameEngine.player.attack();
                         break;
                     case 'power':
-                        gameEngine.keys.specialPower = true;
-                        break;
-                }
-            });
-
-            btn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                if (!gameEngine || !gameEngine.player) return;
-                
-                switch(action) {
-                    case 'jump':
-                        gameEngine.keys.jump = false;
-                        break;
-                    case 'superjump':
-                        gameEngine.keys.superJump = false;
-                        break;
-                    case 'attack':
-                        gameEngine.keys.attack = false;
-                        break;
-                    case 'power':
-                        gameEngine.keys.specialPower = false;
+                        gameEngine.player.useSpecialPower();
                         break;
                 }
             });
@@ -1626,10 +1620,10 @@ class Player {
     update(keys, deltaTime) {
         // Movimento horizontal
         this.velocityX = 0;
-        if (keys['a'] || keys['arrowleft']) {
+        if (keys['a'] || keys['arrowleft'] || keys.left) {
             this.velocityX = -this.speed;
         }
-        if (keys['d'] || keys['arrowright']) {
+        if (keys['d'] || keys['arrowright'] || keys.right) {
             this.velocityX = this.speed;
         }
 
