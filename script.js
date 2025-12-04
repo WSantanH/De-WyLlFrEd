@@ -446,7 +446,9 @@ class GameManager {
                 enemySpawnInterval: 3000,
                 maxEnemies: 3,
                 enemyDamageMultiplier: 0.7,
-                enemyHealthMultiplier: 0.8
+                enemyHealthMultiplier: 0.8,
+                waves: 3,
+                enemiesPerWave: 10
             },
             {
                 id: 2,
@@ -457,7 +459,9 @@ class GameManager {
                 enemySpawnInterval: 2500,
                 maxEnemies: 4,
                 enemyDamageMultiplier: 0.85,
-                enemyHealthMultiplier: 0.9
+                enemyHealthMultiplier: 0.9,
+                waves: 4,
+                enemiesPerWave: 12
             },
             {
                 id: 3,
@@ -468,7 +472,9 @@ class GameManager {
                 enemySpawnInterval: 2000,
                 maxEnemies: 5,
                 enemyDamageMultiplier: 1.0,
-                enemyHealthMultiplier: 1.0
+                enemyHealthMultiplier: 1.0,
+                waves: 5,
+                enemiesPerWave: 15
             },
             {
                 id: 4,
@@ -479,7 +485,9 @@ class GameManager {
                 enemySpawnInterval: 1500,
                 maxEnemies: 6,
                 enemyDamageMultiplier: 1.2,
-                enemyHealthMultiplier: 1.2
+                enemyHealthMultiplier: 1.2,
+                waves: 6,
+                enemiesPerWave: 18
             },
             {
                 id: 5,
@@ -490,7 +498,9 @@ class GameManager {
                 enemySpawnInterval: 1200,
                 maxEnemies: 7,
                 enemyDamageMultiplier: 1.4,
-                enemyHealthMultiplier: 1.4
+                enemyHealthMultiplier: 1.4,
+                waves: 7,
+                enemiesPerWave: 20
             },
             {
                 id: 6,
@@ -501,7 +511,9 @@ class GameManager {
                 enemySpawnInterval: 1000,
                 maxEnemies: 8,
                 enemyDamageMultiplier: 1.6,
-                enemyHealthMultiplier: 1.6
+                enemyHealthMultiplier: 1.6,
+                waves: 8,
+                enemiesPerWave: 25
             },
             {
                 id: 7,
@@ -512,7 +524,9 @@ class GameManager {
                 enemySpawnInterval: 800,
                 maxEnemies: 10,
                 enemyDamageMultiplier: 2.0,
-                enemyHealthMultiplier: 2.0
+                enemyHealthMultiplier: 2.0,
+                waves: 10,
+                enemiesPerWave: 30
             }
         ];
     }
@@ -1135,6 +1149,15 @@ class GameEngine {
         this.enemySpawnInterval = 2000; // 2 segundos
         this.maxEnemies = 5;
         
+        // Sistema de ondas
+        this.currentWave = 1;
+        this.totalWaves = 3;
+        this.enemiesPerWave = 10;
+        this.enemiesSpawnedInWave = 0;
+        this.enemiesKilledInWave = 0;
+        this.waveCooldown = 0;
+        this.waveCooldownTime = 3000; // 3 segundos entre ondas
+        
         // Estatísticas da partida
         this.stats = {
             kills: 0,
@@ -1210,6 +1233,12 @@ class GameEngine {
         this.projectiles = [];
         this.particles = [];
         
+        // Resetar sistema de ondas
+        this.currentWave = 1;
+        this.enemiesSpawnedInWave = 0;
+        this.enemiesKilledInWave = 0;
+        this.waveCooldown = 0;
+        
         // Resetar estatísticas
         this.stats = {
             kills: 0,
@@ -1232,6 +1261,8 @@ class GameEngine {
             this.enemySpawnInterval = level.enemySpawnInterval;
             this.maxEnemies = level.maxEnemies;
             this.currentLevel = level;
+            this.totalWaves = level.waves;
+            this.enemiesPerWave = level.enemiesPerWave;
         }
         
         const charData = game.getCharacter(game.selectedCharacter);
@@ -1296,11 +1327,37 @@ class GameEngine {
             }
         }
 
-        // Spawn de inimigos
-        this.enemySpawnTimer += deltaTime;
-        if (this.enemySpawnTimer >= this.enemySpawnInterval && this.enemies.length < this.maxEnemies) {
-            this.spawnEnemy();
-            this.enemySpawnTimer = 0;
+        // Sistema de ondas
+        if (this.waveCooldown > 0) {
+            this.waveCooldown -= deltaTime;
+        }
+
+        // Checar se a onda foi completada
+        if (this.enemiesKilledInWave >= this.enemiesPerWave) {
+            if (this.currentWave >= this.totalWaves) {
+                // Todas as ondas completas - vitória!
+                this.running = false;
+                this.updateAllMissions();
+                game.endGame(true);
+                return;
+            } else {
+                // Próxima onda
+                this.currentWave++;
+                this.enemiesSpawnedInWave = 0;
+                this.enemiesKilledInWave = 0;
+                this.waveCooldown = this.waveCooldownTime;
+                this.showWaveMessage();
+            }
+        }
+
+        // Spawn de inimigos (apenas se não estiver no cooldown entre ondas)
+        if (this.waveCooldown <= 0 && this.enemiesSpawnedInWave < this.enemiesPerWave) {
+            this.enemySpawnTimer += deltaTime;
+            if (this.enemySpawnTimer >= this.enemySpawnInterval && this.enemies.length < this.maxEnemies) {
+                this.spawnEnemy();
+                this.enemySpawnTimer = 0;
+                this.enemiesSpawnedInWave++;
+            }
         }
 
         // Atualizar inimigos
@@ -1333,6 +1390,7 @@ class GameEngine {
                     
                     if (enemy.health <= 0) {
                         this.stats.kills++;
+                        this.enemiesKilledInWave++;
                         this.stats.noDamageKills++;
                         this.stats.comboKills++;
                         this.stats.comboTimer = 10000; // 10 segundos para combo
@@ -1404,6 +1462,29 @@ class GameEngine {
         this.ctx.fillRect(0, this.groundY, this.canvas.width, 5);
         this.ctx.shadowBlur = 0;
 
+        // Desenhar informação de onda
+        this.ctx.fillStyle = '#0ff';
+        this.ctx.font = 'bold 24px Orbitron';
+        this.ctx.textAlign = 'center';
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = '#0ff';
+        this.ctx.fillText(`ONDA ${this.currentWave}/${this.totalWaves}`, this.canvas.width / 2, 40);
+        this.ctx.fillText(`Inimigos: ${this.enemiesKilledInWave}/${this.enemiesPerWave}`, this.canvas.width / 2, 70);
+        this.ctx.shadowBlur = 0;
+        this.ctx.textAlign = 'left';
+        
+        // Mostrar cooldown entre ondas
+        if (this.waveCooldown > 0) {
+            this.ctx.fillStyle = '#ff0';
+            this.ctx.font = 'bold 32px Orbitron';
+            this.ctx.textAlign = 'center';
+            this.ctx.shadowBlur = 15;
+            this.ctx.shadowColor = '#ff0';
+            this.ctx.fillText(`PRÓXIMA ONDA EM ${Math.ceil(this.waveCooldown / 1000)}s`, this.canvas.width / 2, this.canvas.height / 2);
+            this.ctx.shadowBlur = 0;
+            this.ctx.textAlign = 'left';
+        }
+
         // Desenhar partículas
         this.particles.forEach(p => p.render(this.ctx));
 
@@ -1417,6 +1498,20 @@ class GameEngine {
 
         // Desenhar inimigos
         this.enemies.forEach(e => e.render(this.ctx));
+    }
+
+    showWaveMessage() {
+        // Criar efeito visual para nova onda
+        for (let i = 0; i < 50; i++) {
+            const particle = new Particle(
+                this.canvas.width / 2, 
+                this.canvas.height / 2,
+                Math.random() * 360,
+                Math.random() * 8 + 4,
+                '#0ff'
+            );
+            this.particles.push(particle);
+        }
     }
 
     spawnEnemy() {
